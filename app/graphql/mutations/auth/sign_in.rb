@@ -24,7 +24,7 @@ class Mutations::Auth::SignIn < GraphQL::Schema::Mutation
     user = User.find_by email: email
     valid_sign_in = user.present? && user.valid_password?(password)
 
-    device_lockable_enabled = user.lock_strategy_enabled?(:failed_attempts)
+    device_lockable_enabled = User.lock_strategy_enabled?(:failed_attempts)
 
     if user.access_locked?
       return {
