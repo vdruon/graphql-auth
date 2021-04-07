@@ -26,7 +26,7 @@ class Mutations::Auth::SignIn < GraphQL::Schema::Mutation
 
     device_lockable_enabled = User.lock_strategy_enabled?(:failed_attempts)
 
-    if user.access_locked?
+    if user && user.access_locked?
       return {
         errors: [
           {
@@ -59,9 +59,6 @@ class Mutations::Auth::SignIn < GraphQL::Schema::Mutation
         user.save(validate: false) 
       end
     end
-
-    # TODO tests && error messages
-
 
     if valid_sign_in
       generate_access_token(user, response)
