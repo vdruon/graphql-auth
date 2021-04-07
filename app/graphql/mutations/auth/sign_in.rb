@@ -26,7 +26,7 @@ class Mutations::Auth::SignIn < GraphQL::Schema::Mutation
 
     device_lockable_enabled = User.lock_strategy_enabled?(:failed_attempts)
 
-    if user && user.access_locked?
+    if user.present? && user.access_locked?
       return {
         errors: [
           {
@@ -39,7 +39,7 @@ class Mutations::Auth::SignIn < GraphQL::Schema::Mutation
       }
     end
 
-    if device_lockable_enabled && !valid_sign_in
+    if device_lockable_enabled && user.present? && !valid_sign_in
       user.increment_failed_attempts
 
       if user.send('attempts_exceeded?')
